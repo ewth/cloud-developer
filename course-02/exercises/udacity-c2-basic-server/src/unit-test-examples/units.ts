@@ -1,14 +1,26 @@
 // Super Simple Unit Functions
 
 export const add = (a: number, b: number) => {
-    return a + b;
-    }
+  return a + b;
+};
 
 export const divide = (a: number, b: number) => {
-    if(b === 0) { throw new Error('div by 0') }
+  if (b === 0) {
+    throw new Error("div by 0");
+  }
 
-    return a / b;
-    }
+  return a / b;
+};
+
+export const concat = (first: string, second: string) => {
+  if (first === "") {
+    throw new Error("First string empty");
+  }
+  if (second === "") {
+    throw new Error("Second string empty")
+  }
+  return first + second;
+}
 
 // @TODO try creating a method "concat" to concatenate two strings
 // it should take two string paramaters.
