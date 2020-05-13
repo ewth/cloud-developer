@@ -16,15 +16,56 @@ router.get('/', async (req: Request, res: Response) => {
     res.send(items);
 });
 
-//@TODO
-//Add an endpoint to GET a specific resource by Primary Key
+// Get a specific resource by primary key
+router.get('/:id', async (req: Request, res: Response) => {
+    let { id } = req.params;
+    // Basic numeric check
+    // @todo: think of a nicer way to do this
+    if (!id || isNaN(id)) {
+        // @todo: this should be a nice format, e.g. a message, error code
+        return res.status(400).send("Invalid ID specified")
+    }
+    // Lookup item by id
+    const item = await FeedItem.findOne({ where: { id: id }});
+    if (item) {
+        return res.send(item);
+    }
+    // 404 if item not found
+    res.status(404).send("Not Found")
+});
+
 
 // update a specific resource
 router.patch('/:id', 
     requireAuth, 
     async (req: Request, res: Response) => {
-        //@TODO try it yourself
-        res.send(500).send("not implemented")
+        let { id } = req.params;
+        let { caption, url } = req.body;
+        if (!id || isNaN(id)) {
+            return res.status(400).send("Invalid ID specified")
+        }
+        if (caption == undefined && url == undefined) {
+            return res.status(400).send("Nothing specified to update");
+        }
+        // Lookup item by id
+        const item = await FeedItem.findOne({ where: { id: id }});
+        if (item) {
+            let changed: Boolean = false;
+            if (caption !== undefined) {
+                item.caption = caption;
+                changed = true;
+            }
+            if (url !== undefined) {
+                item.url = url;
+                changed = true;
+            }
+            if (changed) {
+                item.save();
+            }
+            return res.send(item);
+        }
+        // 404 if item not found
+        res.status(404).send("Not Found")
 });
 
 
